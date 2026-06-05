@@ -6,10 +6,10 @@ interface HighlightColorPickItem extends vscode.QuickPickItem {
 }
 
 const colorOptions: HighlightColorPickItem[] = [
-	{ label: 'Yellow', color: 'yellow' },
-	{ label: 'Red', color: 'red' },
-	{ label: 'Green', color: 'green' },
-	{ label: 'Blue', color: 'blue' },
+	{ label: '$(circle-filled) Yellow', description: 'Highlight in Yellow', color: 'yellow' },
+	{ label: '$(circle-filled) Red', description: 'Highlight in Red', color: 'red' },
+	{ label: '$(circle-filled) Green', description: 'Highlight in Green', color: 'green' },
+	{ label: '$(circle-filled) Blue', description: 'Highlight in Blue', color: 'blue' },
 ];
 
 export async function showColorPicker(): Promise<HighlightColor | undefined> {
