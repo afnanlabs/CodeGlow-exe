@@ -7,7 +7,7 @@ export class StorageManager {
 	constructor(private readonly context: vscode.ExtensionContext) {}
 
 	load(): HighlightMap {
-		return this.context.workspaceState.get<HighlightMap>(STORAGE_KEY, {});
+		return this.context.workspaceState.get<HighlightMap>(STORAGE_KEY) ?? {};
 	}
 
 	async save(map: HighlightMap): Promise<void> {

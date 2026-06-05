@@ -17,5 +17,10 @@ export interface HighlightEntry {
 export type HighlightMap = Record<string, HighlightEntry[]>;
 
 export function generateId(): string {
-	return `codeglow-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, character => {
+		const randomValue = Math.floor(Math.random() * 16);
+		const value = character === 'x' ? randomValue : (randomValue & 0x3) | 0x8;
+
+		return value.toString(16);
+	});
 }
