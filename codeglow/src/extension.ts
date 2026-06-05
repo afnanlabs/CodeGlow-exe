@@ -13,28 +13,61 @@ export function activate(context: vscode.ExtensionContext): void {
     showColorPicker,
   );
 
-  context.subscriptions.push(
-    { dispose: () => decorationProvider.disposeAll() },
-    vscode.commands.registerCommand("codeglow.applyHighlight", () =>
-      highlightManager.applyHighlight(),
-    ),
-    vscode.commands.registerCommand("codeglow.removeHighlight", () =>
-      highlightManager.removeHighlight(),
-    ),
-    vscode.commands.registerCommand("codeglow.changeHighlightColor", () =>
-      highlightManager.changeHighlightColor(),
-    ),
-    vscode.workspace.onDidOpenTextDocument((document) =>
-      highlightManager.restoreForDocument(document),
-    ),
-    vscode.window.onDidChangeActiveTextEditor((editor) => {
+  const disposeDecorations = { dispose: () => decorationProvider.disposeAll() };
+  const highlightCommand = vscode.commands.registerCommand(
+    "codeglow.highlight",
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+
       if (editor) {
-        highlightManager.restoreForEditor(editor);
+        await highlightManager.applyHighlight(editor);
       }
-    }),
-    vscode.workspace.onDidChangeTextDocument((event) =>
-      highlightManager.handleDocumentChange(event),
-    ),
+    },
+  );
+  const removeHighlightCommand = vscode.commands.registerCommand(
+    "codeglow.removeHighlight",
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+
+      if (editor) {
+        await highlightManager.removeHighlight(editor);
+      }
+    },
+  );
+  const changeColorCommand = vscode.commands.registerCommand(
+    "codeglow.changeColor",
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+
+      if (editor) {
+        await highlightManager.changeHighlightColor(editor);
+      }
+    },
+  );
+  const openDocumentListener = vscode.workspace.onDidOpenTextDocument(
+    (document) => {
+      highlightManager.restoreForDocument(document);
+    },
+  );
+  const activeEditorListener = vscode.window.onDidChangeActiveTextEditor(
+    (editor) => {
+      highlightManager.restoreForEditor(editor);
+    },
+  );
+  const documentChangeListener = vscode.workspace.onDidChangeTextDocument(
+    (event) => {
+      highlightManager.updateRangesForDocument(event);
+    },
+  );
+
+  context.subscriptions.push(
+    disposeDecorations,
+    highlightCommand,
+    removeHighlightCommand,
+    changeColorCommand,
+    openDocumentListener,
+    activeEditorListener,
+    documentChangeListener,
   );
 
   highlightManager.restoreForAllOpenEditors();
