@@ -150,7 +150,12 @@ export class HighlightManager {
 			}
 
 			for (const highlight of highlights) {
-				if (change.range.start.line <= highlight.range.startLine) {
+				const startsBeforeHighlightLine = change.range.start.line < highlight.range.startLine;
+				const startsBeforeHighlightOnSameLine =
+					change.range.start.line === highlight.range.startLine &&
+					change.range.start.character <= highlight.range.startCharacter;
+
+				if (startsBeforeHighlightLine || startsBeforeHighlightOnSameLine) {
 					highlight.range.startLine = Math.max(0, highlight.range.startLine + lineDelta);
 					highlight.range.endLine = Math.max(0, highlight.range.endLine + lineDelta);
 					didUpdateRanges = true;
