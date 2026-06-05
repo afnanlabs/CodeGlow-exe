@@ -9,15 +9,41 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "codeglow.helloWorld",
-        "title": "Hello World"
+        "command": "codeglow.applyHighlight",
+        "title": "CodeGlow: Apply Highlight"
+      },
+      {
+        "command": "codeglow.removeHighlight",
+        "title": "CodeGlow: Remove Highlight"
+      },
+      {
+        "command": "codeglow.changeHighlightColor",
+        "title": "CodeGlow: Change Highlight Color"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "codeglow.applyHighlight",
+          "group": "codeglow@1"
+        },
+        {
+          "command": "codeglow.removeHighlight",
+          "group": "codeglow@2"
+        },
+        {
+          "command": "codeglow.changeHighlightColor",
+          "group": "codeglow@3"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
