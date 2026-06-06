@@ -3,12 +3,26 @@
   "displayName": "CodeGlow",
   "description": "A VS Code extension that provides persistent manual code highlighting.",
   "version": "0.0.1",
+  "publisher": "afnanlabs",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.75.0"
   },
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "highlight",
+    "code",
+    "decorations",
+    "review",
+    "notes"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/afnanlabs/CodeGlow-exe.git"
+  },
+  "icon": "media/icon.png",
   "activationEvents": [
     "onStartupFinished"
   ],
