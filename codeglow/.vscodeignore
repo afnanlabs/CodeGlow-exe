@@ -1,11 +1,10 @@
-.vscode/**
-.vscode-test/**
-src/**
-.gitignore
-.yarnrc
-vsc-extension-quickstart.md
-**/tsconfig.json
-**/eslint.config.mjs
-**/*.map
-**/*.ts
-**/.vscode-test.*
+# Exclude everything by default, then include only runtime package assets.
+**
+!out/
+!out/*.js
+!media/
+!media/icon.png
+!media/preview.png
+!package.json
+!README.md
+!LICENSE
