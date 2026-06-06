@@ -1,71 +1,53 @@
-# codeglow README
+# CodeGlow
 
-This is the README for your extension "codeglow". After writing up a brief description, we recommend including the following sections.
+CodeGlow adds persistent manual code highlights to VS Code. Select any code region, apply a color, and the highlight is restored when the editor or workspace is opened again.
+
+![CodeGlow preview](media/preview.png)
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Highlight arbitrary code selections in Yellow, Red, Green, or Blue.
+- Persist highlights per workspace with VS Code `workspaceState`.
+- Restore highlights when documents open, tabs change, or VS Code starts.
+- Remove a highlight from the current cursor position.
+- Change the color of an existing highlight without recreating it.
+- Track highlights through line insertions and deletions above highlighted code.
 
-For example if there is an image subfolder under your extension project workspace:
+## Usage
 
-\!\[feature X\]\(images/feature-x.png\)
+1. Select a code region.
+2. Right-click in the editor.
+3. Choose **CodeGlow: Apply Highlight**.
+4. Pick a color from the list.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+To remove or recolor a highlight, place the cursor inside the highlighted region, right-click, and choose the matching CodeGlow command.
 
-## Requirements
+## Commands
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+| Command | Command ID | Description |
+| --- | --- | --- |
+| CodeGlow: Apply Highlight | `codeglow.highlight` | Applies a selected color to the current selection. |
+| CodeGlow: Remove Highlight | `codeglow.removeHighlight` | Removes the highlight under the cursor. |
+| CodeGlow: Change Highlight Color | `codeglow.changeColor` | Changes the color of the highlight under the cursor. |
 
-## Extension Settings
+## Installation
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### Marketplace
 
-For example:
+1. Open the Extensions view in VS Code.
+2. Search for **CodeGlow**.
+3. Select **Install**.
 
-This extension contributes the following settings:
+### VSIX
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+1. Download or build the `.vsix` package.
+2. In VS Code, run **Extensions: Install from VSIX...** from the Command Palette.
+3. Select the CodeGlow `.vsix` file.
 
-## Known Issues
+## Notes
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+CodeGlow uses line-based range tracking. Highlights move when lines are inserted or removed above them. If highlighted lines are deleted, the affected highlights are removed.
 
-## Release Notes
+## License
 
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+MIT
