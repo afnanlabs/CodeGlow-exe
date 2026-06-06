@@ -47,7 +47,7 @@ export class HighlightManager {
 
 	async removeHighlight(editor: vscode.TextEditor): Promise<void> {
 		const filePath = this.getFilePath(editor.document);
-		const match = this.findHighlightAtPosition(filePath, editor.selection.active);
+		const match = this.findHighlightAtPosition(editor.document, filePath, editor.selection.active);
 
 		if (!match) {
 			vscode.window.showInformationMessage('No highlight found at the current cursor position.');
@@ -66,7 +66,7 @@ export class HighlightManager {
 
 	async changeHighlightColor(editor: vscode.TextEditor): Promise<void> {
 		const filePath = this.getFilePath(editor.document);
-		const match = this.findHighlightAtPosition(filePath, editor.selection.active);
+		const match = this.findHighlightAtPosition(editor.document, filePath, editor.selection.active);
 
 		if (!match) {
 			vscode.window.showInformationMessage('No highlight found at the current cursor position.');
@@ -85,10 +85,7 @@ export class HighlightManager {
 	}
 
 	restoreForDocument(document: vscode.TextDocument): void {
-		const filePath = this.getFilePath(document);
-		const editor = vscode.window.visibleTextEditors.find(
-			visibleEditor => this.getFilePath(visibleEditor.document) === filePath,
-		);
+		const editor = vscode.window.visibleTextEditors.find(visibleEditor => visibleEditor.document === document);
 
 		if (editor) {
 			this.applyDecorationsForFile(editor);
@@ -116,6 +113,7 @@ export class HighlightManager {
 		}
 
 		let didUpdateRanges = false;
+		const removedHighlightIds = new Set<string>();
 
 		for (const change of event.contentChanges) {
 			const lineDelta = this.getLineDelta(change);
@@ -125,11 +123,37 @@ export class HighlightManager {
 			}
 
 			for (const highlight of highlights) {
+				if (removedHighlightIds.has(highlight.id)) {
+					continue;
+				}
+
+				if (!this.isValidSerializedRange(highlight.range)) {
+					removedHighlightIds.add(highlight.id);
+					didUpdateRanges = true;
+					continue;
+				}
+
+				if (this.changeDeletesHighlightedLines(change, highlight.range)) {
+					removedHighlightIds.add(highlight.id);
+					didUpdateRanges = true;
+					continue;
+				}
+
 				if (change.range.start.line < highlight.range.startLine) {
 					highlight.range.startLine = Math.max(0, highlight.range.startLine + lineDelta);
 					highlight.range.endLine = Math.max(0, highlight.range.endLine + lineDelta);
 					didUpdateRanges = true;
 				}
+			}
+		}
+
+		if (removedHighlightIds.size > 0) {
+			const remainingHighlights = highlights.filter(highlight => !removedHighlightIds.has(highlight.id));
+
+			if (remainingHighlights.length > 0) {
+				this.highlightMap[filePath] = remainingHighlights;
+			} else {
+				delete this.highlightMap[filePath];
 			}
 		}
 
@@ -171,7 +195,7 @@ export class HighlightManager {
 	}
 
 	private deserializeRange(range: SerializedRange, document: vscode.TextDocument): vscode.Range | undefined {
-		if (range.endLine < range.startLine) {
+		if (!this.isValidSerializedRange(range)) {
 			return undefined;
 		}
 
@@ -199,6 +223,7 @@ export class HighlightManager {
 	}
 
 	private findHighlightAtPosition(
+		document: vscode.TextDocument,
 		filePath: string,
 		position: vscode.Position,
 	): { entry: HighlightEntry; index: number } | undefined {
@@ -210,14 +235,9 @@ export class HighlightManager {
 
 		for (let index = highlights.length - 1; index >= 0; index -= 1) {
 			const highlight = highlights[index];
-			const range = new vscode.Range(
-				highlight.range.startLine,
-				highlight.range.startCharacter,
-				highlight.range.endLine,
-				highlight.range.endCharacter,
-			);
+			const range = this.deserializeRange(highlight.range, document);
 
-			if (range.contains(position)) {
+			if (range && this.rangeContainsPosition(range, position)) {
 				return { entry: highlight, index };
 			}
 		}
@@ -236,9 +256,58 @@ export class HighlightManager {
 
 	private getLineDelta(change: vscode.TextDocumentContentChangeEvent): number {
 		const removedLines = change.range.end.line - change.range.start.line;
-		const insertedLines = (change.text.match(/\r\n|\r|\n/g) ?? []).length;
+		const insertedLines = change.text.split('\n').length - 1;
 
 		return insertedLines - removedLines;
+	}
+
+	private changeDeletesHighlightedLines(
+		change: vscode.TextDocumentContentChangeEvent,
+		range: SerializedRange,
+	): boolean {
+		const removedLineCount = change.range.end.line - change.range.start.line;
+
+		if (removedLineCount <= 0) {
+			return false;
+		}
+
+		const deletedStartLine = change.range.start.line;
+		const deletedEndLine = change.range.end.character === 0 ? change.range.end.line - 1 : change.range.end.line;
+
+		if (deletedEndLine < deletedStartLine) {
+			return false;
+		}
+
+		return range.startLine <= deletedEndLine && range.endLine >= deletedStartLine;
+	}
+
+	private rangeContainsPosition(range: vscode.Range, position: vscode.Position): boolean {
+		return range.contains(position) || position.isEqual(range.end);
+	}
+
+	private isValidSerializedRange(range: unknown): range is SerializedRange {
+		if (typeof range !== 'object' || range === null) {
+			return false;
+		}
+
+		const candidate = range as Partial<SerializedRange>;
+
+		return (
+			Number.isInteger(candidate.startLine) &&
+			Number.isInteger(candidate.startCharacter) &&
+			Number.isInteger(candidate.endLine) &&
+			Number.isInteger(candidate.endCharacter) &&
+			candidate.startLine !== undefined &&
+			candidate.startCharacter !== undefined &&
+			candidate.endLine !== undefined &&
+			candidate.endCharacter !== undefined &&
+			candidate.startLine >= 0 &&
+			candidate.startCharacter >= 0 &&
+			candidate.endLine >= 0 &&
+			candidate.endCharacter >= 0 &&
+			(candidate.endLine > candidate.startLine ||
+				(candidate.endLine === candidate.startLine && candidate.endCharacter >= candidate.startCharacter))
+		);
 	}
 
 	private clamp(value: number, min: number, max: number): number {
