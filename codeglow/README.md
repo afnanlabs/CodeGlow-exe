@@ -6,8 +6,14 @@ CodeGlow brings document-style highlighting to Visual Studio Code. Select any co
 
 Whether you're studying a new language, reviewing unfamiliar code, or documenting important logic, CodeGlow helps preserve the connection between your explanations and the code they describe.
 
+<<<<<<< HEAD
 ![CodeGlow Preview](media/preview.png)
 
+=======
+<p align="center">
+  <img src="media/preview.png" alt="CodeGlow Preview" width="700" style="border-radius: 8px;">
+</p>
+>>>>>>> 993e10c (docs: polish README layout and switch to local asset paths)
 ---
 
 ## Why CodeGlow?
@@ -16,53 +22,36 @@ Comments explain code.
 
 However, as files grow and time passes, it becomes harder to remember exactly which code region a comment was originally describing.
 
-CodeGlow solves this by allowing you to visually highlight specific code regions and persist those highlights across editor restarts and workspace sessions.
+CodeGlow solves this by allowing you to **visually highlight** specific code regions and **persist those highlights** across editor restarts and workspace sessions.
 
 Perfect for:
 
-- Programming students
-- Self-taught developers
-- Technical educators
-- Code reviewers
-- Developers learning unfamiliar codebases
+- 🎓 **Programming students** tracking execution paths
+- 💻 **Self-taught developers** breaking down complex logic
+- 🏫 **Technical educators** preparing walkthroughs
+- 🔍 **Code reviewers** highlighting areas of concern
 
 ---
 
 ## Features
 
-### Manual Code Highlighting
+### 🖌️ Manual Code Highlighting
 
-Select any code region and apply a highlight color.
+Select any code region and apply a highlight color instantly from the context menu. Available colors:
 
-Available colors:
+- 🟨 Yellow | 🟥 Red | 🟩 Green | 🟦 Blue
 
-- 🟨 Yellow
-- 🟥 Red
-- 🟩 Green
-- 🟦 Blue
-
-### Persistent Highlights
+### 💾 Persistent Highlights
 
 Highlights are automatically saved and restored when:
 
 - VS Code restarts
 - A workspace reopens
-- A file is reopened
+- A file is closed and reopened
 
-### Unlimited Highlights
+### 📈 Intelligent Range Tracking
 
-Create multiple highlights within the same file.
-
-### Highlight Management
-
-- Remove existing highlights
-- Change highlight colors without recreating highlights
-
-### Intelligent Range Tracking
-
-Highlights automatically adjust when lines are inserted or removed above the highlighted region.
-
----
+Highlights automatically adjust positions when lines are inserted or removed above the highlighted region, keeping your context aligned.
 
 ## Usage
 
@@ -112,6 +101,8 @@ Highlights automatically adjust when lines are inserted or removed above the hig
 2. Open the Command Palette.
 3. Run **Extensions: Install from VSIX...**
 4. Select the CodeGlow package.
+
+> ⚠️ **Note on Line Tracking:** CodeGlow dynamically adjusts highlight ranges when code is added or removed _above_ your selections. Extensive modifications directly _inside_ a highlighted block may require reapplying the highlight.
 
 ---
 
