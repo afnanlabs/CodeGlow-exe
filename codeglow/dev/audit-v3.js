@@ -125,7 +125,7 @@ const target = "UNDO_TEST";
 // 3. Create a quick scratch file, type const test = "EMPTY_WORKSPACE";, and apply a highlight.
 // Expected: * ✅ No workspace storage path crash. Global storage path fallbacks kick in smoothly.
 
-// 📌 TEST I — Bundle Package Verification
+// 📌 TEST I — Bundle Package Verification ✅
 // Steps: 1. Open your development terminal in your root directory (CodeGlow-exe).
 // 2. Execute the compilation step:
 
@@ -138,7 +138,7 @@ const target = "UNDO_TEST";
 // npm run package
 // Expected: * ✅ Generates a clean compilation and outputs: DONE Packaged: codeglow-0.0.1.vsix with no packaging block errors.
 
-// 📌 TEST J — Marketplace Asset Validation Checklist
+// 📌 TEST J — Marketplace Asset Validation Checklist ✅
 // Verify the following file trees exist in your root distribution directory before release gating:
 
 // Required files: README.md, LICENSE, .vscodeignore, package.json, icon.png
