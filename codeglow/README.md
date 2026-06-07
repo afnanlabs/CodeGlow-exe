@@ -2,7 +2,7 @@
 
 CodeGlow adds persistent manual code highlights to VS Code. Select any code region, apply a color, and the highlight is restored when the editor or workspace is opened again.
 
-![CodeGlow preview](media/preview.png)
+![CodeGlow preview](https://raw.githubusercontent.com/afnanlabs/CodeGlow-exe/main/codeglow/media/preview.png)
 
 ## Features
 
@@ -24,11 +24,11 @@ To remove or recolor a highlight, place the cursor inside the highlighted region
 
 ## Commands
 
-| Command | Command ID | Description |
-| --- | --- | --- |
-| CodeGlow: Apply Highlight | `codeglow.highlight` | Applies a selected color to the current selection. |
-| CodeGlow: Remove Highlight | `codeglow.removeHighlight` | Removes the highlight under the cursor. |
-| CodeGlow: Change Highlight Color | `codeglow.changeColor` | Changes the color of the highlight under the cursor. |
+| Command                          | Command ID                 | Description                                          |
+| -------------------------------- | -------------------------- | ---------------------------------------------------- |
+| CodeGlow: Apply Highlight        | `codeglow.highlight`       | Applies a selected color to the current selection.   |
+| CodeGlow: Remove Highlight       | `codeglow.removeHighlight` | Removes the highlight under the cursor.              |
+| CodeGlow: Change Highlight Color | `codeglow.changeColor`     | Changes the color of the highlight under the cursor. |
 
 ## Installation
 
