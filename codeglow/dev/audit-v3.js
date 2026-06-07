@@ -13,7 +13,7 @@
 
 const message = "END_CURSOR_TEST";
 
-// 📌 TEST B — Overlapping Deletion Removal ✅
+// 📌 TEST B — Overlapping Deletion Removal ❎
 // Goal: Verify deleted code blocks are cleanly purged instead of turning into zombie highlights.
 // Steps:
 // 1. Highlight ONLY the word: DELETE_ME
@@ -30,7 +30,7 @@ function deleteTest() {
   const third = "SAFE_LINE";
 }
 
-// 📌 TEST C — Persistence After Deletion
+// 📌 TEST C — Persistence After Deletion ❎
 // Goal: Ensure deleted highlights are wiped from storage, not just the screen.
 // Steps:
 // 1. Right after running TEST B, save this file (Ctrl + S).
@@ -54,7 +54,7 @@ function deleteTest() {
 // 🎨 GROUP 2: SCALE & RE-RENDERING SANITY
 // ========================================================================
 
-// 📌 TEST E — Multiple Color Decoration Cleanup
+// 📌 TEST E — Multiple Color Decoration Cleanup ✅
 // Goal: Verify stale decoration layers are completely disposed of when updated or deleted.
 // Steps:
 // 1. Highlight "YELLOW" -> Yellow, "RED" -> Red, "GREEN" -> Green, "BLUE" -> Blue.
@@ -68,7 +68,7 @@ const redWord = "RED";
 const greenWord = "GREEN";
 const blueWord = "BLUE";
 
-// 📌 TEST F — Massive Highlight Performance Test
+// 📌 TEST F — Massive Highlight Performance Test ✅
 // Goal: Confirm optimized document parsing without typing lag or token drops.
 // Steps:
 // 1. Highlight 20 to 30 of the entries listed below using various colors.
@@ -81,6 +81,7 @@ const test_11 = "TEST_11";
 const test_21 = "TEST_21";
 const test_2 = "TEST_2";
 const test_12 = "TEST_12";
+
 const test_22 = "TEST_22";
 const test_3 = "TEST_3";
 const test_13 = "TEST_13";
@@ -107,7 +108,7 @@ const test_10 = "TEST_10";
 const test_20 = "TEST_20";
 const test_30 = "TEST_30";
 
-// 📌 TEST G — Undo / Redo Tracking Sync
+// 📌 TEST G — Undo / Redo Tracking Sync ❎
 // Goal: Check if content-change listeners evaluate natural editor rollbacks gracefully.
 // Steps:
 // 1. Highlight the string: UNDO_TEST
@@ -118,7 +119,7 @@ const test_30 = "TEST_30";
 
 const target = "UNDO_TEST";
 
-// 📌 TEST H — Empty Workspace Mode
+// 📌 TEST H — Empty Workspace Mode ✅✅
 // Steps: 1. Click File → New Window to spawn a fresh instance.
 // 2. Do NOT open any workspace folder or project directory.
 // 3. Create a quick scratch file, type const test = "EMPTY_WORKSPACE";, and apply a highlight.
