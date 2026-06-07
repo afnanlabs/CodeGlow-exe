@@ -2,18 +2,18 @@
 
 **Persistent code highlighting for learning, reviewing, and explaining code.**
 
+[![Visual Studio Marketplace](https://img.shields.io/badge/Marketplace-CodeGlow-blueviolet?style=flat-square&logo=visual-studio-code)](https://marketplace.visualstudio.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-1.0.0-green?style=flat-square)](package.json)
+
 CodeGlow brings document-style highlighting to Visual Studio Code. Select any code region, apply a color, and keep that visual context across sessions.
 
 Whether you're studying a new language, reviewing unfamiliar code, or documenting important logic, CodeGlow helps preserve the connection between your explanations and the code they describe.
 
-<<<<<<< HEAD
-![CodeGlow Preview](media/preview.png)
-
-=======
 <p align="center">
   <img src="media/preview.png" alt="CodeGlow Preview" width="700" style="border-radius: 8px;">
 </p>
->>>>>>> 993e10c (docs: polish README layout and switch to local asset paths)
+
 ---
 
 ## Why CodeGlow?
