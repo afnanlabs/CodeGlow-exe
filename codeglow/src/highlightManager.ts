@@ -86,9 +86,12 @@ export class HighlightManager {
 	}
 
 	restoreForDocument(document: vscode.TextDocument): void {
-		const editor = vscode.window.visibleTextEditors.find(visibleEditor => visibleEditor.document === document);
+		const filePath = this.getFilePath(document);
+		const editors = vscode.window.visibleTextEditors.filter(
+			visibleEditor => this.getFilePath(visibleEditor.document) === filePath,
+		);
 
-		if (editor) {
+		for (const editor of editors) {
 			this.applyDecorationsForFile(editor);
 		}
 	}
@@ -162,11 +165,27 @@ export class HighlightManager {
 				if (this.changeStartsBeforeOrAtRangeStart(change, highlight.range)) {
 					const nextStartLine = highlight.range.startLine + lineDelta;
 					const nextEndLine = highlight.range.endLine + lineDelta;
+					const nextCharacters = this.getLineChangeCharacterUpdate(change, highlight.range);
 
 					if (nextStartLine < 0 || nextEndLine < nextStartLine) {
 						removedHighlightIds.add(highlight.id);
 						didUpdateRanges = true;
 						continue;
+					}
+
+					if (nextCharacters) {
+						if (
+							nextCharacters.startCharacter < 0 ||
+							nextCharacters.endCharacter < 0 ||
+							(nextStartLine === nextEndLine && nextCharacters.endCharacter <= nextCharacters.startCharacter)
+						) {
+							removedHighlightIds.add(highlight.id);
+							didUpdateRanges = true;
+							continue;
+						}
+
+						highlight.range.startCharacter = nextCharacters.startCharacter;
+						highlight.range.endCharacter = nextCharacters.endCharacter;
 					}
 
 					highlight.range.startLine = nextStartLine;
@@ -177,11 +196,25 @@ export class HighlightManager {
 
 				if (this.changeStartsInsideRange(change, highlight.range)) {
 					const nextEndLine = highlight.range.endLine + lineDelta;
+					const nextEndCharacter = this.getLineChangeEndCharacterUpdate(change, highlight.range);
 
 					if (nextEndLine < highlight.range.startLine) {
 						removedHighlightIds.add(highlight.id);
 						didUpdateRanges = true;
 						continue;
+					}
+
+					if (nextEndCharacter !== undefined) {
+						if (
+							nextEndCharacter < 0 ||
+							(nextEndLine === highlight.range.startLine && nextEndCharacter <= highlight.range.startCharacter)
+						) {
+							removedHighlightIds.add(highlight.id);
+							didUpdateRanges = true;
+							continue;
+						}
+
+						highlight.range.endCharacter = nextEndCharacter;
 					}
 
 					highlight.range.endLine = nextEndLine;
@@ -347,6 +380,67 @@ export class HighlightManager {
 		return undefined;
 	}
 
+	private getLineChangeCharacterUpdate(
+		change: vscode.TextDocumentContentChangeEvent,
+		range: SerializedRange,
+	): CharacterRangeUpdate | undefined {
+		if (change.text.includes('\n') && change.range.start.line === range.startLine) {
+			const startCharacter = this.getCharacterAfterLineInsertion(change, range.startCharacter);
+			const endCharacter =
+				range.endLine === range.startLine
+					? this.getCharacterAfterLineInsertion(change, range.endCharacter)
+					: range.endCharacter;
+
+			return { startCharacter, endCharacter };
+		}
+
+		if (change.range.end.line > change.range.start.line && change.range.end.line === range.startLine) {
+			const startCharacter = this.getCharacterAfterLineDeletion(change, range.startCharacter);
+			const endCharacter =
+				range.endLine === range.startLine
+					? this.getCharacterAfterLineDeletion(change, range.endCharacter)
+					: range.endCharacter;
+
+			return { startCharacter, endCharacter };
+		}
+
+		return undefined;
+	}
+
+	private getLineChangeEndCharacterUpdate(
+		change: vscode.TextDocumentContentChangeEvent,
+		range: SerializedRange,
+	): number | undefined {
+		if (change.text.includes('\n') && change.range.start.line === range.endLine) {
+			return this.getCharacterAfterLineInsertion(change, range.endCharacter);
+		}
+
+		if (change.range.end.line > change.range.start.line && change.range.end.line === range.endLine) {
+			return this.getCharacterAfterLineDeletion(change, range.endCharacter);
+		}
+
+		return undefined;
+	}
+
+	private getCharacterAfterLineInsertion(
+		change: vscode.TextDocumentContentChangeEvent,
+		character: number,
+	): number {
+		return this.getInsertedTextLastLineLength(change.text) + character - change.range.start.character;
+	}
+
+	private getCharacterAfterLineDeletion(
+		change: vscode.TextDocumentContentChangeEvent,
+		character: number,
+	): number {
+		return change.range.start.character + character - change.range.end.character;
+	}
+
+	private getInsertedTextLastLineLength(text: string): number {
+		const lines = text.split('\n');
+		return lines[lines.length - 1].length;
+	}
+
 	private changeRemovesHighlightRange(
 		change: vscode.TextDocumentContentChangeEvent,
 		range: SerializedRange,
@@ -375,7 +469,15 @@ export class HighlightManager {
 		change: vscode.TextDocumentContentChangeEvent,
 		range: SerializedRange,
 	): boolean {
-		return this.isPositionBeforeOrEqual(
+		if (
+			change.range.isEmpty &&
+			change.range.start.line === range.startLine &&
+			change.range.start.character === range.startCharacter
+		) {
+			return true;
+		}
+
+		return this.isPositionBefore(
 			change.range.start.line,
 			change.range.start.character,
 			range.startLine,
