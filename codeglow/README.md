@@ -6,7 +6,7 @@ CodeGlow brings document-style highlighting to Visual Studio Code. Select any co
 
 Whether you're studying a new language, reviewing unfamiliar code, or documenting important logic, CodeGlow helps preserve the connection between your explanations and the code they describe.
 
-https://github.com/afnanlabs/CodeGlow-exe/blob/cae8cdf160a36910f27c841ff79d105262b5ff75/codeglow/media/preview.png![CodeGlow Preview](https://raw.githubusercontent.com/afnanlabs/CodeGlow-exe/main/codeglow/media/preview.png)
+![CodeGlow Preview](media/preview.png)
 
 ---
 
