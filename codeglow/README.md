@@ -10,11 +10,7 @@ CodeGlow brings document-style highlighting to Visual Studio Code. Select any co
 
 Whether you're studying a new language, reviewing unfamiliar code, or documenting important logic, CodeGlow helps preserve the connection between your explanations and the code they describe.
 
-<p align="center">
-  <img src="media/preview.png" alt="CodeGlow Preview" width="700" style="border-radius: 8px;">
-</p>
-
----
+![CodeGlow Preview](media/preview.png)
 
 ## Why CodeGlow?
 
