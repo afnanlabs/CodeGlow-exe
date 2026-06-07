@@ -3,7 +3,7 @@
   "displayName": "CodeGlow",
   "description": "A VS Code extension that provides persistent manual code highlighting and annotations for learning, reviewing, documenting, and explaining code.",
   "version": "1.0.1",
-  "publisher": "Afnan Khan",
+  "publisher": "afnan-khan",
   "license": "MIT",
   "engines": {
     "vscode": "^1.75.0"
