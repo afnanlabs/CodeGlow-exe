@@ -4,6 +4,7 @@ import { StorageManager } from './storageManager';
 import { HighlightColor, HighlightEntry, HighlightMap, SerializedRange, generateId } from './types';
 
 type ColorPicker = () => Promise<HighlightColor | undefined>;
+type CharacterRangeUpdate = { startCharacter: number; endCharacter: number };
 
 const highlightColors: HighlightColor[] = ['yellow', 'red', 'green', 'blue'];
 
@@ -118,10 +119,6 @@ export class HighlightManager {
 		for (const change of event.contentChanges) {
 			const lineDelta = this.getLineDelta(change);
 
-			if (lineDelta === 0) {
-				continue;
-			}
-
 			for (const highlight of highlights) {
 				if (removedHighlightIds.has(highlight.id)) {
 					continue;
@@ -133,15 +130,61 @@ export class HighlightManager {
 					continue;
 				}
 
-				if (this.changeDeletesHighlightedLines(change, highlight.range)) {
+				if (this.changeRemovesHighlightRange(change, highlight.range)) {
 					removedHighlightIds.add(highlight.id);
 					didUpdateRanges = true;
 					continue;
 				}
 
-				if (change.range.start.line < highlight.range.startLine) {
-					highlight.range.startLine = Math.max(0, highlight.range.startLine + lineDelta);
-					highlight.range.endLine = Math.max(0, highlight.range.endLine + lineDelta);
+				if (lineDelta === 0) {
+					const characterUpdate = this.getCharacterRangeUpdate(change, highlight.range);
+
+					if (!characterUpdate) {
+						continue;
+					}
+
+					if (
+						characterUpdate.startCharacter < 0 ||
+						characterUpdate.endCharacter < 0 ||
+						characterUpdate.endCharacter <= characterUpdate.startCharacter
+					) {
+						removedHighlightIds.add(highlight.id);
+						didUpdateRanges = true;
+						continue;
+					}
+
+					highlight.range.startCharacter = characterUpdate.startCharacter;
+					highlight.range.endCharacter = characterUpdate.endCharacter;
+					didUpdateRanges = true;
+					continue;
+				}
+
+				if (this.changeStartsBeforeOrAtRangeStart(change, highlight.range)) {
+					const nextStartLine = highlight.range.startLine + lineDelta;
+					const nextEndLine = highlight.range.endLine + lineDelta;
+
+					if (nextStartLine < 0 || nextEndLine < nextStartLine) {
+						removedHighlightIds.add(highlight.id);
+						didUpdateRanges = true;
+						continue;
+					}
+
+					highlight.range.startLine = nextStartLine;
+					highlight.range.endLine = nextEndLine;
+					didUpdateRanges = true;
+					continue;
+				}
+
+				if (this.changeStartsInsideRange(change, highlight.range)) {
+					const nextEndLine = highlight.range.endLine + lineDelta;
+
+					if (nextEndLine < highlight.range.startLine) {
+						removedHighlightIds.add(highlight.id);
+						didUpdateRanges = true;
+						continue;
+					}
+
+					highlight.range.endLine = nextEndLine;
 					didUpdateRanges = true;
 				}
 			}
@@ -261,24 +304,125 @@ export class HighlightManager {
 		return insertedLines - removedLines;
 	}
 
-	private changeDeletesHighlightedLines(
+	private getCharacterRangeUpdate(
+		change: vscode.TextDocumentContentChangeEvent,
+		range: SerializedRange,
+	): CharacterRangeUpdate | undefined {
+		if (change.range.start.line !== change.range.end.line || change.text.includes('\n')) {
+			return undefined;
+		}
+
+		if (range.startLine !== range.endLine || change.range.start.line !== range.startLine) {
+			return undefined;
+		}
+
+		const removedCharacters = change.range.end.character - change.range.start.character;
+		const characterDelta = change.text.length - removedCharacters;
+
+		if (characterDelta === 0) {
+			return undefined;
+		}
+
+		if (change.range.end.character <= range.startCharacter) {
+			return {
+				startCharacter: range.startCharacter + characterDelta,
+				endCharacter: range.endCharacter + characterDelta,
+			};
+		}
+
+		if (
+			this.isPositionBefore(
+				change.range.start.line,
+				change.range.start.character,
+				range.endLine,
+				range.endCharacter,
+			)
+		) {
+			return {
+				startCharacter: range.startCharacter,
+				endCharacter: range.endCharacter + characterDelta,
+			};
+		}
+
+		return undefined;
+	}
+
+	private changeRemovesHighlightRange(
 		change: vscode.TextDocumentContentChangeEvent,
 		range: SerializedRange,
 	): boolean {
-		const removedLineCount = change.range.end.line - change.range.start.line;
-
-		if (removedLineCount <= 0) {
+		if (change.range.isEmpty) {
 			return false;
 		}
 
-		const deletedStartLine = change.range.start.line;
-		const deletedEndLine = change.range.end.character === 0 ? change.range.end.line - 1 : change.range.end.line;
+		return (
+			this.isPositionBeforeOrEqual(
+				change.range.start.line,
+				change.range.start.character,
+				range.startLine,
+				range.startCharacter,
+			) &&
+			this.isPositionAfterOrEqual(
+				change.range.end.line,
+				change.range.end.character,
+				range.endLine,
+				range.endCharacter,
+			)
+		);
+	}
 
-		if (deletedEndLine < deletedStartLine) {
-			return false;
-		}
+	private changeStartsBeforeOrAtRangeStart(
+		change: vscode.TextDocumentContentChangeEvent,
+		range: SerializedRange,
+	): boolean {
+		return this.isPositionBeforeOrEqual(
+			change.range.start.line,
+			change.range.start.character,
+			range.startLine,
+			range.startCharacter,
+		);
+	}
 
-		return range.startLine <= deletedEndLine && range.endLine >= deletedStartLine;
+	private changeStartsInsideRange(
+		change: vscode.TextDocumentContentChangeEvent,
+		range: SerializedRange,
+	): boolean {
+		return (
+			this.isPositionAfterOrEqual(
+				change.range.start.line,
+				change.range.start.character,
+				range.startLine,
+				range.startCharacter,
+			) &&
+			this.isPositionBefore(
+				change.range.start.line,
+				change.range.start.character,
+				range.endLine,
+				range.endCharacter,
+			)
+		);
+	}
+
+	private isPositionBeforeOrEqual(
+		line: number,
+		character: number,
+		targetLine: number,
+		targetCharacter: number,
+	): boolean {
+		return line < targetLine || (line === targetLine && character <= targetCharacter);
+	}
+
+	private isPositionBefore(line: number, character: number, targetLine: number, targetCharacter: number): boolean {
+		return line < targetLine || (line === targetLine && character < targetCharacter);
+	}
+
+	private isPositionAfterOrEqual(
+		line: number,
+		character: number,
+		targetLine: number,
+		targetCharacter: number,
+	): boolean {
+		return line > targetLine || (line === targetLine && character >= targetCharacter);
 	}
 
 	private rangeContainsPosition(range: vscode.Range, position: vscode.Position): boolean {
