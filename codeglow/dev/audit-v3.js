@@ -13,7 +13,7 @@
 
 const message = "END_CURSOR_TEST";
 
-// 📌 TEST B — Overlapping Deletion Removal ❎
+// 📌 TEST B — Overlapping Deletion Removal ✅
 // Goal: Verify deleted code blocks are cleanly purged instead of turning into zombie highlights.
 // Steps:
 // 1. Highlight ONLY the word: DELETE_ME
@@ -25,12 +25,13 @@ const message = "END_CURSOR_TEST";
 function deleteTest() {
   const first = "SAFE_LINE";
 
+  const second = "DELETE";
   // Yes when i deleted the whole line but still ghost markes are there
 
   const third = "SAFE_LINE";
 }
 
-// 📌 TEST C — Persistence After Deletion ❎
+// 📌 TEST C — Persistence After Deletion
 // Goal: Ensure deleted highlights are wiped from storage, not just the screen.
 // Steps:
 // 1. Right after running TEST B, save this file (Ctrl + S).
@@ -108,7 +109,7 @@ const test_10 = "TEST_10";
 const test_20 = "TEST_20";
 const test_30 = "TEST_30";
 
-// 📌 TEST G — Undo / Redo Tracking Sync ❎
+// 📌 TEST G — Undo / Redo Tracking Sync ✅
 // Goal: Check if content-change listeners evaluate natural editor rollbacks gracefully.
 // Steps:
 // 1. Highlight the string: UNDO_TEST
@@ -150,110 +151,13 @@ const target = "UNDO_TEST";
 
 /*
 TEST A: Exact End Position Cursor Detection✅
-TEST B: Overlapping Deletion Removal ❎
-TEST C: Persistence After Removal ❎
-TEST D: Corrupted Range Protection ❎
+TEST B: Overlapping Deletion Removal ✅
+TEST C: Persistence After Removal ✅
+TEST D: Corrupted Range Protection ✅
 TEST E: Multiple Color Cleanup ✅
 TEST F: Same File Massive Highlight Test ✅
-TEST G: Undo/Redo Tracking ❎
+TEST G: Undo/Redo Tracking ✅
 TEST H: Empty Workspace ✅
 TEST I: Package Verification ✅
 TEST J: Marketplace Readiness ✅
-*/
-
-/* Personal Audit response and clarigying the errors
-
-BUG 1 — Ghost Highlight Resurrection
-Observed behavior:
-1. Highlight a word.
-2. Delete the entire highlighted line.
-3. Highlight disappears.
-4. Type a new line of code at the same location.
-5. The old highlight reappears on unrelated code.
-
-Expected behavior:
-When a highlighted range is deleted, the corresponding HighlightEntry must be permanently removed from:
-* in-memory highlightMap
-* workspaceState persistence
-
-The deleted highlight must never reappear after further edits, saves, tab switches, reloads, or VS Code restart.
-Review:
-* updateRangesForDocument()
-* deletion overlap detection
-* highlight removal logic
-* storageManager.save() calls
-
----
-
-BUG 2 — Undo / Redo Tracking Failure
-Observed behavior:
-1. Highlight text.
-2. Insert multiple lines above it.
-3. Highlight moves correctly.
-4. Press Ctrl+Z repeatedly.
-5. Highlight disappears permanently and never returns.
-
-Expected behavior:
-Undo events must be treated exactly like normal document change events.
-Highlight positions should move back to their original coordinates.
-
-Tracking must remain stable through:
-* Enter
-* Backspace
-* Delete
-* Ctrl+Z
-* Ctrl+Y
-
-Review:
-* onDidChangeTextDocument handling
-* line delta calculations
-* negative line protection
-* range update logic
-
----
-
-BUG 3 — README Preview Image Broken
-Observed behavior:
-The VSIX installs correctly but the preview image does not render.
-
-Expected behavior:
-README preview image displays correctly in:
-* Local VSIX installation
-* VS Code extension details page
-* Marketplace packaging
-
-Review:
-* README image path
-* .vscodeignore
-* packaged VSIX contents
-
---- 
-
-BUG 4 — Character Edit Tracking Regression
-Observed behavior:
-When editing text inside an existing highlight, the highlighted range can expand, shrink, disappear, or become detached from the originally highlighted text.
-
-Example:
-1. Highlight only:
-   TARGET_HIGHLIGHT
-2. Place cursor before TARGET_HIGHLIGHT
-3. Type:
-   modified_
-
-Observed:
-The highlight behavior becomes inconsistent and may attach to unintended text.
-
-Expected:
-For V1's line-based tracking model:
-* Character edits must not create ghost highlights.
-* Character edits must not corrupt stored ranges.
-* Character edits must not cause highlight disappearance.
-* Stored SerializedRange data must remain internally consistent.
-
-Review:
-* updateRangesForDocument()
-* zero-line-delta edits
-* character-level edits inside highlighted ranges
-* decoration re-render behavior
-
 */
