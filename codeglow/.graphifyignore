@@ -1,0 +1,14 @@
+_.md
+_.mdx
+\*.txt
+
+_.png
+_.jpg
+_.jpeg
+_.webp
+_.gif
+_.svg
+
+\*.pdf
+graphify-out/cache/
+graphify-out/\*.html
