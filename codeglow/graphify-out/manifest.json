@@ -1,0 +1,97 @@
+{
+  ".vscode-test.mjs": {
+    "mtime": 1780686236.2911043,
+    "ast_hash": "8b1982dcbbbaaea7817a6d9cf1414217",
+    "semantic_hash": "8b1982dcbbbaaea7817a6d9cf1414217"
+  },
+  ".vscode/extensions.json": {
+    "mtime": 1780684665.8452418,
+    "ast_hash": "431ee85b94ebf855d652111c2360271d",
+    "semantic_hash": "431ee85b94ebf855d652111c2360271d"
+  },
+  ".vscode/launch.json": {
+    "mtime": 1780684665.851381,
+    "ast_hash": "399bcc9a76f66876fbd2e962a8d0b7aa",
+    "semantic_hash": "399bcc9a76f66876fbd2e962a8d0b7aa"
+  },
+  ".vscode/settings.json": {
+    "mtime": 1780684665.8578653,
+    "ast_hash": "e89faaf6296217e827f0727dcc3c2366",
+    "semantic_hash": "e89faaf6296217e827f0727dcc3c2366"
+  },
+  ".vscode/tasks.json": {
+    "mtime": 1780684665.8643231,
+    "ast_hash": "42427dded0af07f94f98c56cc30fd562",
+    "semantic_hash": "42427dded0af07f94f98c56cc30fd562"
+  },
+  "dev/audit-v3.js": {
+    "mtime": 1780839488.7170997,
+    "ast_hash": "491d2ea096646ad073c32fbe79c3c14c",
+    "semantic_hash": "491d2ea096646ad073c32fbe79c3c14c"
+  },
+  "dev/test-v1.js": {
+    "mtime": 1780695575.7433555,
+    "ast_hash": "3c6f747067a5b4fdf16955c5f6ee89f3",
+    "semantic_hash": "3c6f747067a5b4fdf16955c5f6ee89f3"
+  },
+  "dev/test-v2.0.js": {
+    "mtime": 1780735687.874329,
+    "ast_hash": "165d20ba83f9fc25c8c78920935da063",
+    "semantic_hash": "165d20ba83f9fc25c8c78920935da063"
+  },
+  "dev/test-v2.1.js": {
+    "mtime": 1780705962.987688,
+    "ast_hash": "a97391b78b6da12e7e5a59646f6d5772",
+    "semantic_hash": "a97391b78b6da12e7e5a59646f6d5772"
+  },
+  "eslint.config.mjs": {
+    "mtime": 1780684665.9317946,
+    "ast_hash": "2b9452ad80ed88bffba771580aac5fbc",
+    "semantic_hash": "2b9452ad80ed88bffba771580aac5fbc"
+  },
+  "package.json": {
+    "mtime": 1780830983.9273224,
+    "ast_hash": "5c6956c8bee8692031c9e19b86adc353",
+    "semantic_hash": "5c6956c8bee8692031c9e19b86adc353"
+  },
+  "src/colorPicker.ts": {
+    "mtime": 1780696641.9768121,
+    "ast_hash": "e21edf139c9e0d8b270c9c501369e508",
+    "semantic_hash": "e21edf139c9e0d8b270c9c501369e508"
+  },
+  "src/decorationProvider.ts": {
+    "mtime": 1780689521.9161215,
+    "ast_hash": "78b22f281cda62f6b18c7dcf8749172f",
+    "semantic_hash": "78b22f281cda62f6b18c7dcf8749172f"
+  },
+  "src/extension.ts": {
+    "mtime": 1780706616.3783257,
+    "ast_hash": "09450648d08bd0a74bba29bba4c8ec45",
+    "semantic_hash": "09450648d08bd0a74bba29bba4c8ec45"
+  },
+  "src/highlightManager.ts": {
+    "mtime": 1780708154.6418953,
+    "ast_hash": "529bc56a5ca9d1115a0b03e37218f876",
+    "semantic_hash": "529bc56a5ca9d1115a0b03e37218f876"
+  },
+  "src/storageManager.ts": {
+    "mtime": 1780707855.8541367,
+    "ast_hash": "dc9a72aa0e38d793060ae01dcfa5b85b",
+    "semantic_hash": "dc9a72aa0e38d793060ae01dcfa5b85b"
+  },
+  "src/test/extension.test.ts": {
+    "mtime": 1780686227.1501088,
+    "ast_hash": "35301e06275e1d5def411b87c845050d",
+    "semantic_hash": "35301e06275e1d5def411b87c845050d"
+  },
+  "src/types.ts": {
+    "mtime": 1780696625.7045696,
+    "ast_hash": "8f3c5355dff8632e2c3380b1bec763b2",
+    "semantic_hash": "8f3c5355dff8632e2c3380b1bec763b2"
+  },
+  "tsconfig.json": {
+    "mtime": 1780696847.9743178,
+    "ast_hash": "e919f981988b918c6d7755e9c51383a4",
+    "semantic_hash": "e919f981988b918c6d7755e9c51383a4"
+  }
+}
