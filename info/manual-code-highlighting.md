@@ -407,6 +407,18 @@ Users can fully manage highlights after creation.
 ✅ Feature 8 — Remove Highlight
 ✅ Feature 9 — Edit Highlight Color
 
+// Done
+F1 ✅
+F2 ✅
+F3 ✅
+F4 ✅
+F5 ✅
+F6 ✅
+F7 ⚠️ 95% done
+F8 ✅
+F9 ✅
+F10 ✅
+
 ---
 
 # Explicitly Out of Scope
