@@ -6,7 +6,7 @@ CodeGlow is a VS Code extension that lets you manually highlight code regions wi
 
 Unlike syntax highlighting, CodeGlow highlights are created by you and remain available across editor sessions.
 
-![CodeGlow Example](./info/codeglow-example.png)
+[![CodeGlow Example](https://i.postimg.cc/xj3pJ47b/Chat-GPT-Image-Jun-8-2026-07-22-30-AM.png)](https://postimg.cc/BttBRMJq)
 
 ---
 
