@@ -1,5 +1,6 @@
 class Person {
   // Private field declarations
+
   #firstname;
   #lastname;
 
