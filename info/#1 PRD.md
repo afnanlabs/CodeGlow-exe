@@ -107,3 +107,16 @@ V2 is complete when users can also:
 
 - All storage is local to the workspace via VS Code's built-in `workspaceState` API.
 - No external npm dependencies beyond VS Code engine types.
+
+Project coompleteed
+Created File Structure
+
+```text
+src/
+  extension.ts           ← entry point
+  types.ts               ← shared interfaces
+  highlightManager.ts    ← core business logic
+  decorationProvider.ts  ← decoration type cache
+  storageManager.ts      ← workspaceState read/write
+  colorPicker.ts         ← Quick Pick wrapper
+```
