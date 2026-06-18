@@ -120,3 +120,5 @@ src/
   storageManager.ts      ← workspaceState read/write
   colorPicker.ts         ← Quick Pick wrapper
 ```
+
+> Assumption: Developer is working part-time (2–4 hours/day). A full-time developer could complete V1+V2 in 2–3 days.
